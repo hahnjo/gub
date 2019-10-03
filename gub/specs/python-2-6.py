@@ -66,7 +66,7 @@ ac_cv_py_format_size_t=no
 class Python_2_6__tools (python.Python__tools):
     source = Python_2_6.source
     patches = []
-    dependencies = ['autoconf', 'libtool']
+    dependencies = ['autoconf', 'db', 'libtool']
     force_autoupdate = True
     make_flags = python.Python__tools.make_flags
     so_modules = Python_2_6.so_modules
