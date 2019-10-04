@@ -1,7 +1,7 @@
 from gub import tools
 
 class Automake__tools (tools.AutoBuild):
-    source = 'http://ftp.gnu.org/pub/gnu/automake/automake-1.10.1.tar.gz'
+    source = 'http://ftp.gnu.org/pub/gnu/automake/automake-1.16.1.tar.gz'
     dependencies = ['autoconf']
     configure_variables = (tools.AutoBuild.configure_variables
                            + ' AUTOM4TE=%(tools_prefix)s/bin/autom4te'
