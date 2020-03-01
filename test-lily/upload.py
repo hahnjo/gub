@@ -45,7 +45,7 @@ build_platform = {
         'linux2': 'linux-x86',
 }[sys.platform]
 
-host_spec = maintainer + '@lilypond.org:/var/www/lilypond'
+host_spec = maintainer + '@gcp.lilypond.org:/var/www/lilypond'
 host_source_spec = host_spec + '/downloads'
 host_binaries_spec = host_spec + '/downloads/binaries'
 host_doc_spec = host_spec + '/doc'
