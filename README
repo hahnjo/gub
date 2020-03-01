@@ -43,9 +43,7 @@ Send bug reports and patches to lilypond-devel@gnu.org.
 Supported installer packages
 
 GNU Denemo
-Inkscape
 GNU LilyPond
-OpenOffice.org
 with all essential dependencies. Currently, 207 package build specifications
 are included in GUB.
 
@@ -93,15 +91,15 @@ ACQUIRING
 
 The Git repository is at
 
-  http://github.com/janneke/gub
+  https://github.com/gperciva/gub
 
 You can get it by doing
 
-  git clone git://github.com/janneke/gub.git
+  git clone git://github.com/gperciva/gub.git
 
 or download the latest tarball doing
 
-  wget http://github.com/janneke/gub/tarball/master
+  wget https://github.com/gperciva/gub/tarball/master
 
 GUB home page
 
@@ -137,18 +135,6 @@ Examples
       bin/gub lilypond-installer
 
     this leaves the installer in uploads/
-
-  * Build Inkscape for your platform
-
-      bin/gub inkscape-installer
-
-    this leaves the installer in uploads/
-
-  * Cross build OpenOffice (go-oo.org) for Windows (mingw32)
-
-      make openoffice
-
-    this leaves the Windows installer in uploads/
 
   * Cross build Denemo (http://denemo.org) for Windows (mingw32)
 
@@ -488,9 +474,9 @@ INSTALLING
 
 Get GUB
 
-    git clone git://github.com/janneke/gub.git
+    git clone git://github.com/gperciva/gub.git
 or
-    wget http://github.com/janneke/gub/tarball/master
+    wget https://github.com/gperciva/gub/tarball/master
 
 In addition to the requirements for GUB, you need
 
@@ -595,9 +581,9 @@ INSTALLING
 
 Get GUB
 
-    git clone git://github.com/janneke/gub.git
+    git clone git://github.com/gperciva/gub.git
 or
-    wget http://github.com/janneke/gub/tarball/master
+    wget https://github.com/gperciva/gub/tarball/master
 
 Build everything
 
@@ -631,106 +617,6 @@ More examples
 
                            
 
-GUB -- Inkscape
-
-INSTALLING
-
-Optional: Prepare build environment
-
-  make -f inkscape.make bootstrap
-
-Build everything
-
-  make inkscape
-
-this leaves installers in uploads/
-
-More examples
-
-  * Build all Inkscape installers
-
-      make inkscape
-
-    this leaves installers for GNU/Linux (x86, x86_64, powerpc),
-    FreeBSD (x86, x86_64) and Windows, and documentation in uploads/
-
-    OR (old style)
-
-      bin/gub inkscape
-      bin/gib inkscape --branch=inkscape=trunk inkscape
-
-                           
-
-GUB -- OpenOffice.org
-
-INSTALLING
-
-Get GUB
-
-    git clone git://github.com/janneke/gub.git
-or
-    wget http://github.com/janneke/gub/tarball/master
-
-In addition to the requirements for GUB, you need
-
-  • wine: to run regcomp.exe and lngconvex.exe and possibly other cross-build
-    ignorant build tools that are compile-time tied to the build platform
-
-Ongoing work
-
-The cross building of OpenOffice.org for mingw32 is still a work in progress
-(WIP). The build in GUB will succeeed and an installer can be created, but
-services.rdb may not build correctly.
-
-GSoC 2009
-
-Luckily, Jesús Corrius has accepted the challenge to make this mingw32 Go-Oo
-OpenOffice.org almost-prove-concept hack into a real port, provide clean
-solutions for all the hackweek mess leftovers, make it work as expected, in
-other words: actually usable and run on Windows.
-
-Jesús is working together with Fridrich Strba to clean up and update some of
-the cross build and mingw32 patches, while implementing and porting the missing
-bits of the mingw32 cross build to openSUSE's osc build system.
-
-When jcorrius announces it works, his fixes will be incorporated in GUB to
-provide turnkey OpenOffice.org Windows binaries and installers.
-
-Build everything
-
-  make openoffice
-
-this produces a windows installer in
-
-  uploads/openoffice-COMMITTISH.mingw.exe
-
-More examples
-
-  * Cross build OpenOffice for Windows:
-
-      bin/gub mingw::openoffice
-
-  * Make the nsis installer
-
-      bin/gib mingw::openoffice
-
-  * Optional: Prepare build environment
-
-      make -f lilypond.make bootstrap
-
-The package
-
-  bin/gub tools::openoffice
-
-is a work in progress and attempts to build a tiny fraction of openoffice for
-the build tools.
-
-See also
-
-http://github.com/janneke/gub/tree/master/patches
-http://lilypond.org/blog/janneke/gub3-ooo-mingw-cross-build
-
-                           
 
 GUB the Grand Unified Builder
 

@@ -224,48 +224,6 @@ class WafBuild (AutoBuild):
     compile_command = '%(configure_binary)s build'
     install_command = '%(configure_binary)s install'
 
-class BjamBuild_v2 (MakeBuild):
-    dependencies = ['tools::boost-jam']
-    def patch (self):
-        MakeBuild.patch (self)
-        '''http://goodliffe.blogspot.com/2008/05/cross-compiling-boost.html
-
-Now, here's the magic. Brace yourself. This is how you use a custom
-gcc compiler, you write some odd rule into some very well hidden
-config file:
-
-echo "using gcc : 4.2.2 : PATH_TO_DIR/arm-softfloat-linux-gnu-g++ ; "
-> tools/build/v2/user-config.jam
-'''
-        gcc_version = '' #don't care
-        self.dump ('''
-using gcc : %(gcc_version)s : %(system_prefix)s%(cross_dir)s/bin/%(CXX)s ;
-''',
-                   '%(srcdir)s/tools/build/v2/user-config.jam',
-                   env=locals ())
-    compile_command = misc.join_lines ('''
-bjam
--q
---layout=system
---builddir=%(builddir)s
---prefix=%(prefix_dir)s
---exec-prefix=%(prefix_dir)s
---libdir=%(prefix_dir)s/lib
---includedir=%(prefix_dir)s/include
---verbose
-cxxflags=-fPIC
-toolset=gcc
-target-os=%(target_os)s
-debug-symbols=off
-link=shared
-runtime-link=shared
-threading=multi
-release
-''')
-    install_command = (compile_command
-                       .replace ('=%(prefix_dir)s', '=%(install_prefix)s')
-                       + ' install')
-
 class NullBuild (AutoBuild):
     def stages (self):
         return ['patch', 'install', 'package', 'clean']

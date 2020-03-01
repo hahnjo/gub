@@ -22,9 +22,6 @@ CFLAGS='-O2 -DHAVE_CONFIG_H=1 -I%(builddir)s'
     build_number = '2'
     EXE = '.exe'
     install_command = guile.Guile.install_command + ' install-info'
-    def autopatch (self):
-        # we want info docs in cygwin
-        pass
     def category_dict (self):
         return {'': 'Interpreters'}
     # C&P from guile.Guile__mingw

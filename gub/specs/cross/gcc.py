@@ -5,7 +5,6 @@ from gub import context
 from gub import cross
 from gub import loggedos
 from gub import misc
-from gub.specs import gcc
 
 class Gcc (cross.AutoBuild):
     source = 'http://ftp.gnu.org/pub/gnu/gcc/gcc-4.9.4/gcc-4.9.4.tar.bz2'
@@ -35,7 +34,8 @@ gcc_tooldir='%(prefix_dir)s/%(target_architecture)s'
 ''')
     def patch (self):
         cross.AutoBuild.patch (self)
-        gcc.do_not_look_in_slash_usr (self)
+        self.file_sub ([('( *gcc_cv_tool_dirs=.*gcc_cv_tool_dirs/usr)', r'#\1')],
+                        '%(srcdir)s/configure')
     @context.subst_method
     def NM_FOR_TARGET (self):
          return '%(toolchain_prefix)snm'
@@ -61,13 +61,21 @@ gcc_tooldir='%(prefix_dir)s/%(target_architecture)s'
         cross.AutoBuild.pre_install (self)
         # Only id <PREFIX>/<TARGET-ARCH>/bin exists, gcc's install installs
         # the plain gcc drivers without <TOOLCHAIN-PREFIX>gcc
-#        self.system ('mkdir -p %(install_root)s%(cross_prefix)s/%(target_architecture)s/bin')
         self.system ('mkdir -p %(install_root)s%(prefix_dir)s/%(target_architecture)s/bin')
     def install (self):
         cross.AutoBuild.install (self)
-        gcc.move_target_libs (self, '%(install_prefix)s%(cross_dir)s/%(target_architecture)s')
-        gcc.move_target_libs (self, '%(install_prefix)s%(cross_dir)s/lib')
+        move_target_libs (self, '%(install_prefix)s%(cross_dir)s/%(target_architecture)s')
+        move_target_libs (self, '%(install_prefix)s%(cross_dir)s/lib')
         self.disable_libtool_la_files ('stdc[+][+]')
+
+def move_target_libs (self, libdir):
+    self.system ('mkdir -p %(install_prefix)s/lib || true')
+    def move_target_lib (logger, file_name):
+        base = os.path.split (self.expand (file_name))[1]
+        loggedos.rename (logger, file_name, os.path.join (self.expand ('%(install_prefix)s/lib'), base))
+    # .so* because version numbers trail .so extension.
+    for suf in ['.a', '.la', '.so*', '.dylib']:
+        self.map_find_files (move_target_lib, libdir, 'lib.*%(suf)s' % locals ())
 
 class Gcc__from__source (Gcc):
     dependencies = (Gcc.dependencies

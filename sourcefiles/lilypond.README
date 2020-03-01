@@ -67,7 +67,7 @@ Language:
 Build Instructions:
 
   # Download GUB
-    git clone git://github.com/janneke/gub.git
+    git clone git://github.com/gperciva/gub.git
 
   # Build LilyPond for Cygwin
 

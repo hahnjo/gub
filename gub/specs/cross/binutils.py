@@ -1,7 +1,10 @@
+import re
+import os
+#
 from gub import build
 from gub import cross
+from gub import loggedos
 from gub import misc
-from gub.specs import binutils
 
 class Binutils (cross.AutoBuild):
     source = 'http://ftp.gnu.org/pub/gnu/binutils/binutils-2.25.tar.bz2'
@@ -23,25 +26,43 @@ ac_cv_search_zlibVersion=
                            + misc.join_lines ('''
 LDFLAGS='-L%(tools_prefix)s/lib %(rpath)s %(libs)s'
 '''))
-#CC='gcc -L%(tools_prefix)s/lib %(rpath)s %(libs)s'
-#LD_LIBRARY_PATH=%(tools_prefix)s/lib
     # binutils' makefile uses:
     #     MULTIOSDIR = `$(CC) $(LIBCFLAGS) -print-multi-os-directory`
     # which differs on each system.  Setting it avoids inconsistencies.
     make_flags = misc.join_lines ('''
 MULTIOSDIR=../../lib
 ''')
-#CCLD='$(CC) -L%(tools_prefix)s/lib %(rpath)s'
+
     def install (self):
         cross.AutoBuild.install (self)
-        binutils.install_missing_plain_binaries (self)
-        binutils.install_librestrict_stat_helpers (self)
-        binutils.remove_fedora9_untwanted_but_mysteriously_built_libiberies (self)
-        remove_fedora17_untwanted_but_mysteriously_built_libiberies (self)
+        install_missing_plain_binaries (self)
+        install_librestrict_stat_helpers (self)
 
-def remove_fedora17_untwanted_but_mysteriously_built_libiberies (self):
-    self.system ('rm -f %(install_prefix)s%(cross_dir)s/lib/libiberty.a')
-    self.system ('rm -f %(install_prefix)s%(cross_dir)s/lib64/libiberty.a')
+def add_g_file_names (logger, file_name):
+    dir_name = os.path.dirname (file_name)
+    base_name = os.path.basename (file_name)
+    gnu_base_name = 'g' + base_name
+    if '-' in base_name:
+        gnu_base_name = re.sub ('-([^/g][^/-]*)$', r'-g\1', base_name)
+    gnu_file_name = os.path.join (dir_name, gnu_base_name)
+    loggedos.link (logger, file_name, gnu_file_name)
+
+def install_librestrict_stat_helpers (self):
+    # LIBRESTRICT stats PATH to find gnm and gstrip
+    for d in [
+        '%(install_prefix)s%(cross_dir)s/bin',
+        '%(install_prefix)s%(cross_dir)s/%(target_architecture)s/bin',
+        ]:
+        self.map_find_files (add_g_file_names, d, '(^|.*/)([^/g][^-/]*|.*-[^/g][^-/]*)$')
+
+def install_missing_plain_binaries (self):
+    def copy (logger, full_name):
+        base_name = (os.path.basename (self.expand (full_name))
+                     .replace (self.expand ('%(toolchain_prefix)s'), ''))
+        plain_name = self.expand ('%(install_prefix)s%(cross_dir)s/%(target_architecture)s/bin/%(base_name)s', env=locals ())
+        if not os.path.exists (plain_name):
+            loggedos.system (logger, 'cp %(full_name)s %(plain_name)s' % locals ())
+    self.map_find_files (copy, '%(install_prefix)s%(cross_dir)s/bin', self.expand ('%(toolchain_prefix)s.*'))
 
 class Binutils__mingw (Binutils):
     dependencies = Binutils.dependencies + [
@@ -54,5 +75,4 @@ class Binutils__mingw (Binutils):
         # w32.libtool_fix_allow_undefined to find all libtool files
         self.system ('cd %(builddir)s && make %(compile_flags)s configure-host configure-target')
         # Must ONLY do target stuff, otherwise cross executables cannot find their libraries
-#        self.map_locate (lambda logger,file: build.libtool_update (logger, self.expand ('%(tools_prefix)s/bin/libtool'), file), '%(builddir)s', 'libtool')
         self.map_locate (lambda logger, file: build.libtool_update (logger, self.expand ('%(tools_prefix)s/bin/libtool'), file), '%(builddir)s/libiberty', 'libtool')

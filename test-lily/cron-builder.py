@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#! /usr/bin/env python2
 
 # FIXME: replace `lilypond' with $package to make generic tester
 

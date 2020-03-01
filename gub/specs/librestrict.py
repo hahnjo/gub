@@ -11,7 +11,6 @@ class Librestrict_make__tools (tools.MakeBuild):
     def BARFS_WITH_2_5_1_name (self):
         return 'librestrict-' + '-'.join (self.librestrict_flavours ())
     dependencies = [
-#            'tools::gcc'
             'system::gcc'
             ]
     def get_conflict_dict (self):

@@ -645,7 +645,7 @@ mkdir -p %(install_prefix)s/share/doc/%(name)s
             loggedos.rename (logger, file_name, file_name + '-')
         self.map_find_files (disable_la, '%(install_prefix)s', 'lib' + pattern + '.la')
 
-    # Used in mingw python and liblpsolve.  Better replace this by
+    # Used in mingw python.  Better replace this by
     # fixing the gcc linking command?
     def generate_dll_a_and_la (self, libname, depend=''):
         # ugh, atexit, _onexit mutliply defined in crt2.o

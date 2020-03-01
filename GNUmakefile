@@ -29,20 +29,14 @@ lily% cygwin%:
 	$(MAKE) -f lilypond.make $@
 
 denemo-%:
-	$(MAKE) -f inkscape.make $@
-
-inkscape-%:
-	$(MAKE) -f inkscape.make $@
-
-openoffice-%:
-	$(MAKE) -f openoffice.make $@
+	$(MAKE) -f denemo.make $@
 
 test:
 	rm -rf target
 	make -f lilypond.make tools LOCAL_GUB_OPTIONS=-vvv
 	bin/gub -p $(BUILD_PLATFORM) --branch=lilypond=master:master lilypond -vvv
 
-README: web/index.html web/basics.html web/lilypond.html web/denemo.html web/inkscape.html web/oo.o.html web/history.html web/links.html
+README: web/index.html web/basics.html web/lilypond.html web/denemo.html web/history.html web/links.html
 	w3m -dump $^ | sed 's/website by.*$..//' > $@
 
 web: README

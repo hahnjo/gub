@@ -20,8 +20,6 @@ pretty_names = {
     'denemo': 'GNU_Denemo',
     'git': 'Git',
     'lilypond': 'LilyPond',
-    'openoffice': 'Go-Oo_OpenOffice.org',
-    'ooo-build': 'Go-Oo_OpenOffice.org',
     }
 
 class ChecksumShortCircuit (Exception):
@@ -224,7 +222,8 @@ class Installer (context.RunnableContext):
             'share/mkspecs',
             'share/terminfo',
 # GUB's internal fonts directory settings
-            'etc/fonts/conf.d/98-gub-fonts-dir.conf',
+            'etc/fonts-gub',
+            'var/cache/fontconfig-gub'
             ]
 
         # FIXME: why are we removing these, we need these in a root image.

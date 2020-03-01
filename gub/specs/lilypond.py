@@ -125,19 +125,12 @@ sheet music from a high-level description file.'''
                      locals ())
 
         self.system ('mkdir -p %(install_prefix)s/etc/fonts/')
-        self.dump ('''
+        self.dump ('''\
 <fontconfig>
-<selectfont>
- <rejectfont>
- <pattern>
-  <patelt name="scalable"><bool>false</bool></patelt>
- </pattern>
- </rejectfont>
-</selectfont>
-
-<cachedir>~/.lilypond-fonts.cache-2</cachedir>
+  <cachedir>~/.lilypond-fonts.cache-2</cachedir>
 </fontconfig>
-''', '%(install_prefix)s/etc/fonts/local.conf', 'w', locals ())
+''',
+            '%(install_prefix)s/etc/fonts/local.conf', 'w', locals ())
 
 class LilyPond__smart (LilyPond__simple):
     configure_binary = '%(srcdir)s/smart-configure.sh'
@@ -252,7 +245,7 @@ class LilyPond__darwin (LilyPond):
                 ])
     configure_flags = (LilyPond.configure_flags
                 .replace ('--enable-rpath', '--disable-rpath'))
-    make_flags = ' TARGET_PYTHON="/usr/bin/env python"'
+    make_flags = ' TARGET_PYTHON="/usr/bin/env python2"'
 
 class LilyPond__darwin__ppc (LilyPond__darwin):
     def configure (self):
@@ -291,10 +284,13 @@ class LilyPond_base (target.AutoBuild):
     @context.subst_method
     def doc_limits (self):
         if '64' in self.settings.build_platform:
-            return 'ulimit -m 524288 && ulimit -d 524288 && ulimit -v 2097152 '
+            return 'ulimit -m 1048576 && ulimit -d 1048576 && ulimit -v 3145728'
         return 'ulimit -m 524288 && ulimit -d 524288 && ulimit -v 1048576'
     @context.subst_method
     def doc_relocation (self):
+        # These environment variables control lilypond while being run
+        # within gub to build documentation.  In particular, we use a
+        # special fontconfig setup that doesn't use fonts outside of gub.
         return misc.join_lines ('''
 LILYPOND_EXTERNAL_BINARY=%(system_prefix)s/bin/lilypond
 PATH=%(tools_prefix)s/bin:%(system_prefix)s/bin:$PATH
@@ -302,6 +298,8 @@ MALLOC_CHECK_=2
 LD_LIBRARY_PATH=%(tools_prefix)s/lib:%(system_prefix)s/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
 GS_FONTPATH=%(system_prefix)s/share/ghostscript/%(ghostscript_version)s/fonts:%(system_prefix)s/share/gs/fonts
 GS_LIB=%(system_prefix)s/share/ghostscript/%(ghostscript_version)s/Resource/Init:%(system_prefix)s/share/ghostscript/%(ghostscript_version)s/Resource
+FONTCONFIG_FILE=%(system_prefix)s/etc/fonts-gub/fonts.conf
+FONTCONFIG_PATH=%(tools_prefix)s/etc/fonts-gub
 ''')
     compile_command = ('%(doc_limits)s '
                 '&& %(doc_relocation)s '

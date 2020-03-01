@@ -1,13 +1,4 @@
-# Get a simple database module  -- gdbm is not generally available
+# Get a simple database module.
 
-import dbm.gnu as gnu
-try:
-    import dbm.bsd as bsd
-except:
-    bsd = gnu
-try:
-    import dbm.ndbm as ndbm
-except:
-    ndbm = bsd
-
-db = gnu
+# https://docs.python.org/3/library/dbm.html
+import dbm as db

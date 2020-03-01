@@ -8,6 +8,7 @@
 #include <sys/stat.h>
 #include <sys/syscall.h>
 
+#include "alias.h"
 #include "restrict.c"
 
 static int sys_lstat (char const *file_name, struct stat *buf)
@@ -26,7 +27,7 @@ __lstat (char const *file_name, struct stat *buf)
   return sys_lstat (file_name, buf);
 }
 
-int lstat (char const *file_name, struct stat *buf)  __attribute__ ((alias ("__lstat")));
+safe_alias (__lstat, lstat);
 
 static int sys_oldstat (char const *file_name, struct stat *buf)
 {
@@ -44,7 +45,7 @@ __oldstat (char const *file_name, struct stat *buf)
   return sys_oldstat (file_name, buf);
 }
 
-int oldstat (char const *file_name, struct stat *buf)  __attribute__ ((alias ("__oldstat")));
+safe_alias (__oldstat, oldstat);
 
 static int sys_stat (char const *file_name, struct stat *buf)
 {
@@ -62,7 +63,7 @@ __stat (char const *file_name, struct stat *buf)
   return sys_stat (file_name, buf);
 }
 
-int stat (char const *file_name, struct stat *buf)  __attribute__ ((alias ("__stat")));
+safe_alias (__stat, stat);
 
 #ifdef SYS_ustat
 static int sys_ustat (char const *file_name, struct stat *buf)
@@ -81,7 +82,7 @@ __ustat (char const *file_name, struct stat *buf)
   return sys_ustat (file_name, buf);
 }
 
-int ustat (char const *file_name, struct stat *buf)  __attribute__ ((alias ("__ustat")));
+safe_alias (__ustat, ustat);
 #endif /* SYS_ustat */
 
 #ifdef __linux__
@@ -138,6 +139,6 @@ __xstat (int ver, char const *file_name, struct stat *buf)
   return sys_xstat (ver, file_name, buf);
 }
 
-int xstat (int ver, char const *file_name, struct stat *buf)  __attribute__ ((alias ("__xstat")));
+safe_alias (__xstat, xstat);
 
 #endif /* __linux__ */

@@ -206,32 +206,6 @@ class SConsBuild (AutoBuild):
                 ' %(scons_flags)s')
     install_command = compile_command + ' %(install_flags)s'
 
-class BjamBuild_v2 (MakeBuild):
-    dependencies = ['boost-jam']
-    def patch (self):
-        MakeBuild.patch (self)
-    compile_command = misc.join_lines ('''
-bjam
--q
---layout=system
---builddir=%(builddir)s
---prefix=%(system_prefix)s
---exec-prefix=%(system_prefix)s
---libdir=%(system_prefix)s/lib
---includedir=%(system_prefix)s/include
---verbose
-cxxflags=-fPIC
-toolset=gcc
-debug-symbols=off
-link=shared
-runtime-link=shared
-threading=multi
-release
-''')
-    install_command = (compile_command
-                       .replace ('=%(system_prefix)s', '=%(install_prefix)s')
-                       + ' install')
-
 class NullBuild (AutoBuild):
     def stages (self):
         return ['patch', 'install', 'package', 'clean']

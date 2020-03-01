@@ -1,0 +1,54 @@
+--- python3-3.7.4.orig/configure.ac	2019-10-17 09:10:00.930927301 +0200
++++ python3-3.7.4/configure.ac	2019-10-17 09:42:06.272359210 +0200
+@@ -379,12 +379,15 @@
+ 	*-*-cygwin*)
+ 		ac_sys_system=Cygwin
+ 		;;
++	*-*-darwin*)
++		ac_sys_system=Darwin
++		ac_sys_release=8.0
++		;;
+ 	*)
+ 		# for now, limit cross builds to known configurations
+ 		MACHDEP="unknown"
+ 		AC_MSG_ERROR([cross build not supported for $host])
+ 	esac
+-	ac_sys_release=
+     else
+ 	ac_sys_system=`uname -s`
+ 	if test "$ac_sys_system" = "AIX" \
+@@ -423,6 +426,9 @@
+ 	*-*-cygwin*)
+ 		_host_cpu=
+ 		;;
++	*-*-darwin*)
++		_host_cpu=
++		;;
+ 	*)
+ 		# for now, limit cross builds to known configurations
+ 		MACHDEP="unknown"
+@@ -2417,7 +2423,7 @@
+     LIBTOOL_CRUFT=$LIBTOOL_CRUFT' -install_name $(PYTHONFRAMEWORKINSTALLDIR)/Versions/$(VERSION)/$(PYTHONFRAMEWORK)'
+     LIBTOOL_CRUFT=$LIBTOOL_CRUFT' -compatibility_version $(VERSION) -current_version $(VERSION)';;
+   Darwin/*)
+-    gcc_version=`gcc -dumpversion`
++    gcc_version=`$CC -dumpversion`
+     if test ${gcc_version} '<' 4.0
+         then
+             LIBTOOL_CRUFT="-lcc_dynamic"
+@@ -2437,11 +2443,12 @@
+     ]])],[ac_osx_32bit=yes],[ac_osx_32bit=no],[ac_osx_32bit=yes])
+ 
+     if test "${ac_osx_32bit}" = "yes"; then
+-    	case `/usr/bin/arch` in
+-    	i386)
++    	machine=`$CC -dumpmachine`
++    	case $machine in
++    	i686*)
+     		MACOSX_DEFAULT_ARCH="i386"
+     		;;
+-    	ppc)
++    	powerpc*)
+     		MACOSX_DEFAULT_ARCH="ppc"
+     		;;
+     	*)

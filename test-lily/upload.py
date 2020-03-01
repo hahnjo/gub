@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#! /usr/bin/env python2
 
 maintainer = "graham"
 maintainer_git_username = "philholmes"

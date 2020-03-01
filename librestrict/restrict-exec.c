@@ -7,6 +7,7 @@
 #include <sys/syscall.h>
 #include <unistd.h>
 
+#include "alias.h"
 #include "restrict.c"
 
 /*
@@ -31,4 +32,4 @@ __execve (char const *file_name, char *const argv[], char *const envp[])
   return sys_execve (file_name, argv, envp);
 }
 
-int execve (char const *file_name, char *const argv[], char *const envp[])  __attribute__ ((alias ("__execve")));
+safe_alias (__execve, execve);

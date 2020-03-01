@@ -1,13 +1,4 @@
-# Get a simple database module  -- gdbm is not generally available
+# Get a simple database module.
 
-import dbhash as bsd
-try:
-    import dbm as ndbm
-except:
-    ndbm = bsd
-try:
-    import gdbm as gnu
-except:
-    gnu = ndbm
-
-db = gnu
+# https://docs.python.org/2/library/anydbm.html
+import anydbm as db

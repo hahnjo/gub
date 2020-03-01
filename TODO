@@ -5,7 +5,7 @@
   chroot etch apt-get --force-yes -y install python gcc libc6-dev # minimal
   chroot etch apt-get --force-yes -y install g++ # pkg-config
   chroot etch apt-get --force-yes -y install file # ugh, configure 2.63 hardcodes: /usr/bin/file
-  wget -O gub.tar.gz http://github.com/janneke/gub/tarball/master
+  wget -O gub.tar.gz https://github.com/gperciva/gub/tarball/master
 #  (cd /home/janneke/vc/gub && git tar-tree HEAD | gzip -c - > gub.tar.gz)
 #  cp -pv /home/janneke/vc/gub/gub.tar.gz .
   mkdir -p etch/root/vc/gub

@@ -40,6 +40,9 @@ class Fontforge__tools (tools.AutoBuild):
                 + ' --without-freetype-src'
                 + ' --disable-libff '
                 + ' --enable-double '
+                # force disable cairo and pango
+                + ' --without-cairo '
+                + ' --without-pango '
                 # let's ignore python (and its dynamic link intracies
                 # for now).
                 + ' --without-python')

@@ -7,6 +7,7 @@
 #include <stdarg.h>
 #include <sys/syscall.h>
 
+#include "alias.h"
 #include "restrict.c"
 
 static int
@@ -29,4 +30,4 @@ __open (char const *file_name, int flags, ...)
   return sys_open (file_name, flags, va_arg (p, int));
 }
 
-int open (char const *file_name, int flags, ...) __attribute__ ((alias ("__open")));
+safe_alias (__open, open);

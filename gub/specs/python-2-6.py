@@ -17,10 +17,7 @@ class Python_2_6 (python.Python):
         'python-2.4.2-configure.in-sysrelease.patch',
         'python-2.4.2-setup.py-import.patch&strip=0',
         'python-2.6.4-setup.py-cross_root.patch',
-#        'python-2.4.2-fno-stack-protector.patch',
-#        'python-2.4.5-python-2.6.patch',
         'python-2.4.5-native.patch',
-#        'python-2.4.5-db4.7.patch',
         'python-2.6.4-configure.in-cross.patch',
         'python-2.6.4-include-pc.patch',
         ]
@@ -66,7 +63,7 @@ ac_cv_py_format_size_t=no
 class Python_2_6__tools (python.Python__tools):
     source = Python_2_6.source
     patches = []
-    dependencies = ['autoconf', 'libtool']
+    dependencies = ['autoconf', 'db', 'libtool']
     force_autoupdate = True
     make_flags = python.Python__tools.make_flags
     so_modules = Python_2_6.so_modules

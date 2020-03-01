@@ -98,19 +98,33 @@ cd %(builddir)s/%(i)s && %(relax)s make "CFLAGS=%(cflags)s" "LIBS=%(libs)s" CPPF
         target.AutoBuild.compile (self)
     def install (self):
         target.AutoBuild.install (self)
-        self.dump ('''set FONTCONFIG_FILE=$INSTALLER_PREFIX/etc/fonts/fonts.conf
-set FONTCONFIG_PATH=$INSTALLER_PREFIX/etc/fonts
-''', 
+        self.dump ('''\
+set? FONTCONFIG_FILE=$INSTALLER_PREFIX/etc/fonts/fonts.conf
+set? FONTCONFIG_PATH=$INSTALLER_PREFIX/etc/fonts
+''',
              '%(install_prefix)s/etc/relocate/fontconfig.reloc')
-        self.dump ('''<?xml version="1.0"?>
+        # Stuff for using fontconfig within gub.  We simply make fontconfig
+        # load the configuration from `tools' and add another font
+        # directory.  Note that fontconfig's cache files are platform
+        # dependent and can't be shared across architectures.
+        self.system ('''
+mkdir -p %(install_prefix)s/etc/fonts-gub \
+&& mkdir -p %(install_prefix)s/var/cache/fontconfig-gub
+''')
+        self.dump ('''\
+<?xml version="1.0"?>
 <!DOCTYPE fontconfig SYSTEM "fonts.dtd">
 <fontconfig>
-        <!-- GUB's internal fonts directory -->
-        <dir>%(system_prefix)s/share/fonts</dir>
-        <dir>%(tools_prefix)s/share/fonts</dir>
+  <include>%(tools_prefix)s/etc/fonts-gub/fonts.conf</include>
+
+  <!-- GUB's internal font directory -->
+  <dir>%(system_prefix)s/share/fonts</dir>
+
+  <cachedir>%(system_prefix)s/var/cache/fontconfig-gub</cachedir>
+
 </fontconfig>
 ''',
-             '%(install_prefix)s/etc/fonts/conf.d/98-gub-fonts-dir.conf')
+            '%(install_prefix)s/etc/fonts-gub/fonts.conf')
 
 class Fontconfig__mingw (Fontconfig):
     def patch (self):
@@ -170,11 +184,80 @@ class Fontconfig__tools (tools.AutoBuild):
                 + ' DOCSRC="" ')
     def install (self):
         tools.AutoBuild.install (self)
-        self.dump ('''<?xml version="1.0"?>
+        # For reproducible builds we must not access files outside of the
+        # gub directory tree.  We thus set up a separate configuration in
+        # the `tools' tree for fontconfig, to be activated by appropriately
+        # adjusting the environment variables FONTCONFIG_FILE and
+        # FONTCONFIG_PATH (which are defined with `set?' instead of `set' in
+        # the `fontconfig.reloc' file to make this possible).
+        self.system ('''\
+mkdir -p %(install_prefix)s/etc/fonts-gub \
+&& cd %(install_prefix)s/etc/fonts-gub \
+&& mkdir -p conf.d \
+&& cd conf.d \
+&& for f in 10-hinting-slight.conf \
+            30-metric-aliases.conf \
+            40-nonlatin.conf \
+            45-latin.conf \
+            49-sansserif.conf \
+            60-latin.conf \
+            65-fonts-persian.conf \
+            65-nonlatin.conf \
+            69-unifont.conf \
+            70-no-bitmaps.conf \
+            80-delicious.conf \
+            90-synthetic.conf; do \
+     ln -sr %(install_prefix)s/share/fontconfig/conf.avail/$f $f; \
+   done
+''')
+        self.dump ('''\
+<?xml version="1.0"?>
 <!DOCTYPE fontconfig SYSTEM "fonts.dtd">
+
 <fontconfig>
-        <!-- GUB's internal fonts directory -->
-        <dir>%(tools_prefix)s/share/fonts</dir>
+  <match target="pattern">
+    <test qual="any" name="family">
+      <string>mono</string>
+    </test>
+    <edit name="family" mode="assign" binding="same">
+      <string>monospace</string>
+    </edit>
+  </match>
+
+  <match target="pattern">
+    <test qual="any" name="family">
+      <string>sans serif</string>
+    </test>
+    <edit name="family" mode="assign" binding="same">
+      <string>sans-serif</string>
+    </edit>
+  </match>
+
+  <match target="pattern">
+    <test qual="any" name="family">
+      <string>sans</string>
+    </test>
+    <edit name="family" mode="assign" binding="same">
+      <string>sans-serif</string>
+    </edit>
+  </match>
+
+  <include>conf.d</include>
+
+  <config>
+    <rescan>
+      <int>30</int>
+    </rescan>
+  </config>
 </fontconfig>
 ''',
-             '%(install_prefix)s/etc/fonts/conf.d/98-gub-fonts-dir.conf')
+            '%(install_prefix)s/etc/fonts-gub/fonts.conf')
+        self.dump ('''\
+<?xml version="1.0"?>
+<!DOCTYPE fontconfig SYSTEM "fonts.dtd">
+<fontconfig>
+  <!-- GUB's internal font directory -->
+  <dir>%(tools_prefix)s/share/fonts</dir>
+</fontconfig>
+''',
+            '%(install_prefix)s/etc/fonts-gub/conf.d/08-gub-fonts-dir.conf')
