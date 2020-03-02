@@ -21,13 +21,19 @@ ALL_PLATFORMS=linux-x86 darwin-ppc darwin-x86 mingw linux-64 debian debian-arm f
 ALL_PLATFORMS += cygwin
 
 PLATFORMS=linux-x86
-PLATFORMS+=darwin-ppc darwin-x86
+# 20200302: Last hardware with PowerPC processors shipped in 2006, support was
+# removed with Mac OS X 10.6 in 2009 and Mac OS X 10.7 in 2011 dropped Rosetta
+# for executing PPC binaries on Intel processors.
+# PLATFORMS+=darwin-ppc
+PLATFORMS+=darwin-x86
 PLATFORMS+=mingw
 PLATFORMS+=linux-64
 PLATFORMS+=linux-ppc
 # Works for me, uncommentme!
 # PLATFORMS+=linux-mipsel
-PLATFORMS+=freebsd-x86 freebsd-64
+# 20200302: Binaries linked against GNU libc cannot be executed on a currently
+# supported release of FreeBSD (11.x and 12.x).
+# PLATFORMS+=freebsd-x86 freebsd-64
 # Put cygwin last, because it is not a core lilypond platform. 
 #PLATFORMS += cygwin
 
