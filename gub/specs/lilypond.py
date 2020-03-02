@@ -34,7 +34,7 @@ sheet music from a high-level description file.'''
         'ghostscript',
         'guile-devel',
         'pango-devel',
-        'python-devel',
+        'python3-devel',
         'tools::fonts-texgyre',
         'tools::fonts-urw-core35',
 
@@ -69,7 +69,7 @@ sheet music from a high-level description file.'''
                        + ' --with-texgyre-dir=%(tools_prefix)s/share/fonts/opentype/texgyre'
                        + ' --with-urwotf-dir=%(tools_prefix)s/share/fonts/opentype/urw-core35'
                        )
-    make_flags = ' TARGET_PYTHON=/usr/bin/python'
+    make_flags = ' TARGET_PYTHON=/usr/bin/python3'
 
     if 'stat' in misc.librestrict ():
         home = os.environ['HOME']
@@ -121,9 +121,6 @@ sheet music from a high-level description file.'''
         self.system ('cd %(install_prefix)s/share/lilypond && mv %(installer_version)s current',
                      locals ())
 
-        self.system ('cd %(install_prefix)s/lib/lilypond && mv %(installer_version)s current',
-                     locals ())
-
         self.system ('mkdir -p %(install_prefix)s/etc/fonts/')
         self.dump ('''\
 <fontconfig>
@@ -155,7 +152,7 @@ class LilyPond__freebsd (LilyPond):
 ## shortcut: take python out of dependencies
 class LilyPond__no_python (LilyPond):
     dependencies = [x for x in LilyPond.dependencies
-                if x != 'python-devel']
+                if x != 'python3-devel']
     def configure (self):
         self.system ('mkdir -p %(builddir)s || true') 
         self.system ('touch %(builddir)s/Python.h') 
@@ -224,7 +221,7 @@ class LilyPond__darwin (LilyPond):
                 ])
     configure_flags = (LilyPond.configure_flags
                 .replace ('--enable-rpath', '--disable-rpath'))
-    make_flags = ' TARGET_PYTHON="/usr/bin/env python2"'
+    make_flags = ' TARGET_PYTHON="/usr/bin/env python3"'
 
 class LilyPond__darwin__ppc (LilyPond__darwin):
     def configure (self):
