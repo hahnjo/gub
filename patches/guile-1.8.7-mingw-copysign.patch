@@ -1,0 +1,10 @@
+--- guile-1.8.7/libguile/numbers.h	2020-03-02 15:43:11.673024370 +0100
++++ guile-1.8.7/libguile/numbers.h	2020-03-02 15:43:27.876044196 +0100
+@@ -91,7 +91,6 @@
+ # ifndef GO32
+ #  include <float.h>
+ #  ifdef __MINGW32__
+-#   define copysign _copysign
+ #   define finite _finite
+ #  endif /* __MINGW32__ */
+ # endif /* ndef GO32 */
