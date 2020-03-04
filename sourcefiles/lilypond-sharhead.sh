@@ -209,7 +209,7 @@ chmod +x "$binwrapscript"
 
 wrapscript="${bindir}/%(name)s-wrapper"
 
-for interp in python guile; do
+for interp in python3 guile; do
     echo "Creating script $wrapscript.$interp"
 
     rm -f "$wrapscript.$interp" > /dev/null 2>&1
@@ -230,7 +230,7 @@ done
 cd ${bindir};
     for a in abc2ly musicxml2ly convert-ly midi2ly etf2ly lilypond-book mup2ly; do
 	rm -f $a;
-	ln -s $wrapscript.python $a;
+	ln -s $wrapscript.python3 $a;
 	binaries="$binaries $a"
     done
     for a in lilypond-invoke-editor; do
@@ -274,7 +274,7 @@ fi
 for binary in ${binaries}; do
     rm ${bindir}/${dollar}binary
 done
-rm -f $wrapscript.guile $wrapscript.python
+rm -f $wrapscript.guile $wrapscript.python3
 rm -rf ${prefix}
 rm $uninstall_script
 EOF
