@@ -28,7 +28,8 @@ PLATFORMS=linux-x86
 PLATFORMS+=darwin-x86
 PLATFORMS+=mingw
 PLATFORMS+=linux-64
-PLATFORMS+=linux-ppc
+# 20200303: This is 32-bit, very likely not relevant today.
+# PLATFORMS+=linux-ppc
 # Works for me, uncommentme!
 # PLATFORMS+=linux-mipsel
 # 20200302: Binaries linked against GNU libc cannot be executed on a currently
