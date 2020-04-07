@@ -34,7 +34,7 @@ sheet music from a high-level description file.'''
         'ghostscript',
         'guile-devel',
         'pango-devel',
-        'python-devel',
+        'python3-devel',
         'tools::fonts-texgyre',
         'tools::fonts-urw-core35',
 
@@ -69,7 +69,7 @@ sheet music from a high-level description file.'''
                        + ' --with-texgyre-dir=%(tools_prefix)s/share/fonts/opentype/texgyre'
                        + ' --with-urwotf-dir=%(tools_prefix)s/share/fonts/opentype/urw-core35'
                        )
-    make_flags = ' TARGET_PYTHON=/usr/bin/python'
+    make_flags = ' TARGET_PYTHON=/usr/bin/python3'
 
     if 'stat' in misc.librestrict ():
         home = os.environ['HOME']
@@ -121,9 +121,6 @@ sheet music from a high-level description file.'''
         self.system ('cd %(install_prefix)s/share/lilypond && mv %(installer_version)s current',
                      locals ())
 
-        self.system ('cd %(install_prefix)s/lib/lilypond && mv %(installer_version)s current',
-                     locals ())
-
         self.system ('mkdir -p %(install_prefix)s/etc/fonts/')
         self.dump ('''\
 <fontconfig>
@@ -155,7 +152,7 @@ class LilyPond__freebsd (LilyPond):
 ## shortcut: take python out of dependencies
 class LilyPond__no_python (LilyPond):
     dependencies = [x for x in LilyPond.dependencies
-                if x != 'python-devel']
+                if x != 'python3-devel']
     def configure (self):
         self.system ('mkdir -p %(builddir)s || true') 
         self.system ('touch %(builddir)s/Python.h') 
@@ -215,27 +212,6 @@ cp %(install_prefix)s/share/lilypond/*/python/* %(install_prefix)s/bin
             
         self.dump (bat, '%(install_prefix)s/bin/lilypond-windows.bat.in')
 
-class LilyPond__debian (LilyPond):
-    def get_dependency_dict (self): #debian
-        from gub import debian, gup
-        return {'': gup.gub_to_distro_deps (LilyPond.get_dependency_dict (self)[''],
-                                            debian.gub_to_distro_dict)}
-    def install (self):
-        target.AutoBuild.install (self)
-    def get_build_dependencies (self): # debian
-        #FIXME: aargh, MUST specify gs,  etc here too.
-        return [
-            'gettext',
-            'guile-1.8-dev',
-            'libfontconfig1-dev',
-            'libfreetype6-dev',
-            'libglib2.0-dev',
-            'python2.4-dev',
-            'libpango1.0-dev',
-            'zlib1g-dev',
-            'urw-fonts',
-            ] + ['gs']
-
 class LilyPond__darwin (LilyPond):
     dependencies = (LilyPond.dependencies
                 # FIXME: move to lilypond-installer.py, see __mingw.
@@ -245,7 +221,7 @@ class LilyPond__darwin (LilyPond):
                 ])
     configure_flags = (LilyPond.configure_flags
                 .replace ('--enable-rpath', '--disable-rpath'))
-    make_flags = ' TARGET_PYTHON="/usr/bin/env python2"'
+    make_flags = ' TARGET_PYTHON="/usr/bin/env python3"'
 
 class LilyPond__darwin__ppc (LilyPond__darwin):
     def configure (self):
@@ -314,8 +290,5 @@ Lilypond_base = LilyPond_base
 Lilypond = LilyPond
 Lilypond__darwin = LilyPond__darwin
 Lilypond__darwin__ppc = LilyPond__darwin__ppc
-Lilypond__debian = LilyPond__debian
-Lilypond__debian_arm = LilyPond__debian
 Lilypond__freebsd = LilyPond__freebsd
 Lilypond__mingw = LilyPond__mingw
-Lilypond__mipsel = LilyPond__debian

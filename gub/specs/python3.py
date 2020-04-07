@@ -21,7 +21,6 @@ class Python3 (target.AutoBuild):
     configure_flags = (target.AutoBuild.configure_flags + python_configure_flags
         + misc.join_lines('''
 --disable-ipv6
-PYTHON_FOR_BUILD=%(tools_prefix)s/bin/python3
 '''))
 # Adding --disable-ipv6 is a simple "fix" for Python 3.7.4 complaining:
 #    checking getaddrinfo bug... yes
@@ -30,13 +29,7 @@ PYTHON_FOR_BUILD=%(tools_prefix)s/bin/python3
 # This might be because our glibc is too old. As we don't do network, this
 # shouldn't be too bad...
 
-    def patch (self):
-        # Make setup.py work with tools::python3 as PYTHON_FOR_BUILD.
-        self.file_sub ([('srcdir = sysconfig.*', 'srcdir = \'%(srcdir)s\'')],
-                       '%(srcdir)s/setup.py')
-        target.AutoBuild.patch (self)
-
-class Python3__darwin (Python3):
+class Python3__darwin__x86 (Python3):
     patches = Python3.patches + [
         'python-3.7.4-configure.ac-darwin.patch'
     ]
@@ -44,6 +37,17 @@ class Python3__darwin (Python3):
     configure_flags = Python3.configure_flags + misc.join_lines('''
 READELF=/usr/bin/readelf
 MACOSX_DEPLOYMENT_TARGET=10.3
+ac_cv_little_endian_double=yes
+''')
+
+class Python3__linux__x86 (Python3):
+    configure_flags = Python3.configure_flags + misc.join_lines('''
+ac_cv_little_endian_double=yes
+''')
+
+class Python3__linux__64 (Python3):
+    configure_flags = Python3.configure_flags + misc.join_lines('''
+ac_cv_little_endian_double=yes
 ''')
 
 class Python3__mingw (build.BinaryBuild):

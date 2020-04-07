@@ -156,7 +156,7 @@ def compute_distances (options, source):
 
     html = ''
     for d in version_dirs:
-        cmd = 'python %s %s %s ' % (options.output_distance_script,
+        cmd = 'python3 %s %s %s ' % (options.output_distance_script,
                                     d, cur_dir)
 
         base = os.path.split (d)[1]

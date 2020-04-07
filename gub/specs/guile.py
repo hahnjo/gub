@@ -107,6 +107,7 @@ exit 0
         self.system ('cd %(install_prefix)s%(cross_dir)s/bin && cp -pv %(target_architecture)s-guile-config guile-config')
 
 class Guile__mingw (Guile):
+    patches = Guile.patches + ['guile-1.8.7-mingw-copysign.patch']
     def __init__ (self, settings, source):
         Guile.__init__ (self, settings, source)
         # Configure (compile) without -mwindows for console
