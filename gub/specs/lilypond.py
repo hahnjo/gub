@@ -194,7 +194,7 @@ cd %(builddir)s/lily && touch out/lilypond
 rm -f %(install_prefix)s/bin/lilypond
 install -m755 %(builddir)s/lily/out/lilypond-windows %(install_prefix)s/bin/lilypond-windows.exe
 install -m755 %(builddir)s/lily/out/lilypond-console %(install_prefix)s/bin/lilypond.exe
-cp %(install_prefix)s/share/lilypond/*/python/* %(install_prefix)s/bin
+cp %(install_prefix)s/share/lilypond/*/python/*.py %(install_prefix)s/bin
 ''')
         def rename (logger, name):
             header = open (name).readline ().strip ()
