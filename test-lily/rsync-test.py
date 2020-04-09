@@ -128,7 +128,7 @@ def compare_test_tarballs (options, version_file_tuples):
     html = ''
     for d in dirs[:-1]:
         cmd = ('cd %s '
-               '&& python3 %s --create-images --output-dir %s/compare-%s --local-datadir %s %s'
+               '&& python3 %s --output-dir %s/compare-%s --local-datadir %s %s'
                % (unpack_dir,
                   options.output_distance_script,
                   dest_dir, d, d, dirs[-1]))
