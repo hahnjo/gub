@@ -64,4 +64,4 @@ cp %(srcdir)s/%(python_zip)s -d %(install_prefix)s/bin/
 ''')
 
 class Python3__tools (tools.AutoBuild, Python3):
-    configure_flags = (tools.AutoBuild.configure_flags + Python3.python_configure_flags)
+    configure_flags = (tools.AutoBuild.configure_flags + ' --without-ensurepip ')
