@@ -50,12 +50,12 @@ input/regression/out-test
     def compile (self):
         # system::xetex uses system's shared libraries instead of GUB's ones.
         self.file_sub ([('^exec xetex ', 'LD_LIBRARY_PATH= exec xetex ')],
-                       '%(builddir)s/scripts/build/out/xetex-with-options')
+                       '%(srcdir)s/scripts/build/xetex-with-options.sh')
 
         # system::xelatex uses system's shared libraries instead of GUB's ones.
         self.file_sub ([('^exec xelatex ',
                          'LD_LIBRARY_PATH= exec xelatex ')],
-                       '%(builddir)s/scripts/build/out/xelatex-with-options')
+                       '%(srcdir)s/scripts/build/xelatex-with-options.sh')
 
         # tools::extractpdfmark uses system's libstdc++ instead of GUB's one.
         # We preserve the timestamp of this file to avoid rebuilding various

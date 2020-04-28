@@ -28,11 +28,11 @@ class LilyPond_doc (lilypond.LilyPond_base):
     def compile (self):
         # system::xetex uses system's shared libraries instead of GUB's ones.
         self.file_sub ([('^exec xetex ', 'LD_LIBRARY_PATH= exec xetex ')],
-                       '%(builddir)s/scripts/build/out/xetex-with-options')
+                       '%(srcdir)s/scripts/build/xetex-with-options.sh')
         # system::xelatex uses system's shared libraries instead of GUB's ones.
         self.file_sub ([('^exec xelatex ',
                          'LD_LIBRARY_PATH= exec xelatex ')],
-                       '%(builddir)s/scripts/build/out/xelatex-with-options')
+                       '%(srcdir)s/scripts/build/xelatex-with-options.sh')
         # tools::extractpdfmark uses system's libstdc++ instead of GUB's one.
         self.file_sub ([('^EXTRACTPDFMARK = ([^L].*)$',
                          'EXTRACTPDFMARK = LD_LIBRARY_PATH=%(tools_prefix)s/lib \\1')],
@@ -40,8 +40,8 @@ class LilyPond_doc (lilypond.LilyPond_base):
         # The timestamp of these scripts should not be older than config.make.
         # Otherwise, they will be regenerated from the source directory
         # and the above substitutes will be lost.
-        self.system ('touch %(builddir)s/scripts/build/out/xetex-with-options')
-        self.system ('touch %(builddir)s/scripts/build/out/xelatex-with-options')
+        self.system ('touch %(srcdir)s/scripts/build/xetex-with-options.sh')
+        self.system ('touch %(srcdir)s/scripts/build/xelatex-with-options.sh')
         lilypond.LilyPond_base.compile (self)
     make_flags = misc.join_lines ('''
 CROSS=no
